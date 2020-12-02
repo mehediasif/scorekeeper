@@ -1,32 +1,39 @@
-const player1 = document.querySelector('#p1button');
-const player2 = document.querySelector('#p2button');
+const p1 = {
+    score: 0,
+    button:document.querySelector('#p1button'),
+    display:document.querySelector('#p1Display')
+}
+const p2 = {
+    score: 0,
+    button:document.querySelector('#p2button'),
+    display:document.querySelector('#p2Display')
+}
+
 const resetButton = document.querySelector('#reset');
-const p1display = document.querySelector('#p1Display');
-const p2display = document.querySelector('#p2Display');
 const playToSelect = document.querySelector('#playto');
 
-let p1score = 0;
-let p2score = 0;
-let winningScore = 5;
+let winningScore = 3;
 let isGameOver = false;
 
-player1.addEventListener('click', function() {
-  if (!isGameOver) {
-      p1score += 1;
-      if (p1score === winningScore){
-          isGameOver = true;
-      }
-      p1display.textContent = p1score;
-  }
-})
-player2.addEventListener('click', function() {
+function updateScore(player, opponent){
     if (!isGameOver) {
-        p2score += 1;
-        if (p2score === winningScore){
+        player.score += 1;
+        if (player.score === winningScore){
             isGameOver = true;
+            player.display.classList.add('winner');
+            opponent.display.classList.add('loser');
+            player.button.disabled = true;
+            opponent.button.disabled = true;
         }
-        p2display.textContent = p2score;
+        player.display.textContent = player.score;
     }
+}
+
+p1.button.addEventListener('click', function() {
+  updateScore(p1, p2)
+})
+p2.button.addEventListener('click',function() {
+    updateScore(p2, p1)
 })
 playToSelect.addEventListener('change', function(){
     winningScore = parseInt(this.value);
@@ -37,9 +44,12 @@ resetButton.addEventListener('click', reset);
 
 function reset() {
     isGameOver = false;
-    p1score = 0;
-    p2score = 0;
-    p1display.textContent = parseInt(0);
-    p2display.textContent = parseInt(0);
+    for(let p of [p1,p2]){
+        p.score = 0;
+        p.display.textContent = 0;
+        p.display.classList.remove('winner', 'loser');
+        p.button.disabled = false;
+    }
+
 }
 
